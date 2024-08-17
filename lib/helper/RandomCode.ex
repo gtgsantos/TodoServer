@@ -1,4 +1,4 @@
-defmodule TodoRandomCode do
+defmodule RandomCode do
   @moduledoc """
   Documentation for `TodoServer`.
   """
@@ -12,6 +12,13 @@ defmodule TodoRandomCode do
       6
 
   """
+
+  def aa([head | tail], newValue) do
+    # IO.inspect("list: " <> head)
+    # IO.inspect("newValue: " <> tail)
+    [head | tail + newValue]
+  end
+
   @spec factorial(integer) :: integer
   def factorial(val \\ 0) do
     IO.puts(val)
