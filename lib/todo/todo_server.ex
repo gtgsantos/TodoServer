@@ -1,4 +1,6 @@
 defmodule TodoServer do
+  defstruct name: nil, time: nil
+
   @moduledoc """
   Documentation for `TodoServer`.
   """
