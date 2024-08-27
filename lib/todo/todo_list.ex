@@ -10,8 +10,12 @@ defmodule TodoList do
 
   ## Examples
 
-      iex> TodoList.add_entries(~D[2023-01-01], "Charles")
-      %TodoList{title: "Charles", date: ~D[2023-01-01]}
+      iex> list = TodoList.new()
+      %{}
+      iex> list = TodoList.add_entries(list, ~D[2023-01-01], "Charles")
+      %{~D[2023-01-01] => ["Charles"]}
+      iex> list = TodoList.add_entries(list, ~D[2023-01-01], "John")
+      %{~D[2023-01-01] => ["John", "Charles"]}
 
   """
 
@@ -26,5 +30,9 @@ defmodule TodoList do
       # %TodoList{date: date, title: title}, #TODO to next version
       fn titles -> [title | titles] end
     )
+  end
+
+  def get_entries(list, date) do
+    Map.get(list, date, [])
   end
 end
