@@ -1,6 +1,5 @@
 defmodule TodoList do
-  defstruct title: nil, date: nil
-
+  
   @moduledoc """
   Documentation for `TodoList`.
   """
@@ -19,20 +18,14 @@ defmodule TodoList do
 
   """
 
-  def new(), do: %{}
+  def new(), do: MultiDict.new()
 
   # @spec add_entries(Date.t() | nil, String.t() | nil) :: %TodoList{}
   def add_entries(list \\ new(), date \\ Date.utc_today(), title \\ "Empty") do
-    Map.update(
-      list,
-      date,
-      [title],
-      # %TodoList{date: date, title: title}, #TODO to next version
-      fn titles -> [title | titles] end
-    )
+    MultiDict.add_entries(list, date, title)
   end
 
   def get_entries(list, date) do
-    Map.get(list, date, [])
+    MultiDict.get_entries(list, date)
   end
 end
