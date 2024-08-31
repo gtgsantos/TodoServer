@@ -1,31 +1,65 @@
 defmodule TodoList do
-  
   @moduledoc """
   Documentation for `TodoList`.
   """
 
+  @type t :: %__MODULE__{
+          next_id: integer(),
+          entries: %{integer() => map()}
+        }
+
+  defstruct next_id: 1, entries: %{}
+
   @doc """
-  Base code to declare a TodoList as a TodoServer's List.
+  Creates a new `TodoList` struct.
+
+  ## Examples
+
+      iex> TodoList.new()
+      %TodoList{next_id: 1, entries: %{}}
+  """
+  @spec new() :: t()
+  def new(), do: %TodoList{}
+
+  @doc """
+  Adds a new entry to the `TodoList`.
 
   ## Examples
 
       iex> list = TodoList.new()
-      %{}
-      iex> list = TodoList.add_entries(list, ~D[2023-01-01], "Charles")
-      %{~D[2023-01-01] => ["Charles"]}
-      iex> list = TodoList.add_entries(list, ~D[2023-01-01], "John")
-      %{~D[2023-01-01] => ["John", "Charles"]}
-
+      %TodoList{next_id: 1, entries: %{}}
+      iex> list = TodoList.add_entries(list, %{date: ~D[2023-01-01], title: "Charles"})
+      %TodoList{next_id: 2, entries: %{1 => %{date: ~D[2023-01-01], title: "Charles", id: 1}}}
+      iex> TodoList.add_entries(list, %{date: ~D[2023-01-01], title: "John"})
+      %TodoList{next_id: 3, entries: %{1 => %{date: ~D[2023-01-01], title: "Charles", id: 1}, 2 => %{date: ~D[2023-01-01], title: "John", id: 2}}}
   """
+  @spec add_entries(t(), map()) :: t()
+  def add_entries(todo_list, entry) do
+    # adds an id to entry
+    entry = Map.put(entry, :id, todo_list.next_id)
 
-  def new(), do: MultiDict.new()
+    # adds new entry to todo's list entries, generating new entry list
+    new_entries = Map.put(todo_list.entries, todo_list.next_id, entry)
 
-  # @spec add_entries(Date.t() | nil, String.t() | nil) :: %TodoList{}
-  def add_entries(list \\ new(), date \\ Date.utc_today(), title \\ "Empty") do
-    MultiDict.add_entries(list, date, title)
+    %TodoList{todo_list | entries: new_entries, next_id: todo_list.next_id + 1}
   end
 
-  def get_entries(list, date) do
-    MultiDict.get_entries(list, date)
+  @doc """
+  Retrieves all entries for a given date in the `TodoList`.
+
+  ## Examples
+
+      iex> list = TodoList.new()
+      %TodoList{next_id: 1, entries: %{}}
+      iex> list = TodoList.add_entries(list, %{date: ~D[2023-01-01], title: "Charles"})
+      %TodoList{next_id: 2, entries: %{1 => %{date: ~D[2023-01-01], title: "Charles", id: 1}}}
+      iex> TodoList.get_entries(list, ~D[2023-01-01])
+      [%{date: ~D[2023-01-01], title: "Charles", id: 1}]
+  """
+  @spec get_entries(t(), Date.t()) :: [map()]
+  def get_entries(todo_list, date) do
+    todo_list.entries
+    |> Map.values()
+    |> Enum.filter(fn value -> Map.get(value, :date, []) == date end)
   end
 end
