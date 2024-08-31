@@ -62,4 +62,16 @@ defmodule TodoList do
     |> Map.values()
     |> Enum.filter(fn value -> Map.get(value, :date, []) == date end)
   end
+
+  def update_entry(todo_list, key, update_function) do
+    case Map.fetch(todo_list.entries, key) do
+      :error ->
+        todo_list
+
+      {:ok, value} ->
+        new_entry = update_function.(value)
+        new_entries = Map.put(todo_list.entries, key, new_entry)
+        %TodoList{todo_list | entries: new_entries}
+    end
+  end
 end
