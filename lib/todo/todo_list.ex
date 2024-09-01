@@ -31,8 +31,13 @@ defmodule TodoList do
   # TODO need to handle exception in case of value mismatch
   @spec new(:list, list()) :: t()
   def new(:list, entries) do
-    size = length(entries)
-    %TodoList{entries: entries, next_id: size + 1}
+    Enum.reduce(
+      entries, 
+      %TodoList{}, 
+      # fn entry, accumulator -> TodoList.add_entries(accumulator, entry) end
+      &TodoList.add_entries(&2, &1)
+    )
+    
   end
 
   @doc """
