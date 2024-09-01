@@ -69,9 +69,16 @@ defmodule TodoList do
         todo_list
 
       {:ok, value} ->
+        # call lambda function
         new_entry = update_function.(value)
         new_entries = Map.put(todo_list.entries, key, new_entry)
         %TodoList{todo_list | entries: new_entries}
     end
+  end
+
+  # this method adds a new attribute in case of it doesn't exist
+  def update_entry_2(todo_list, key, value) do
+    new_entries = put_in(todo_list.entries, key, value)
+    %TodoList{todo_list | entries: new_entries}
   end
 end

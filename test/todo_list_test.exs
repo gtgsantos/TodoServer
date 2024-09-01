@@ -48,4 +48,20 @@ defmodule TodoListTest do
 
     assert response_name == {:ok, "nome 4"}
   end
+
+  test "test an simplified way to update value" do
+    todo_list_entries = %{
+      1 => %{date: ~D[2024-02-01], name: "nome 1"},
+      2 => %{date: ~D[2024-02-02], name: "nome 2"},
+      3 => %{date: ~D[2024-02-03], name: "nome 3"}
+    }
+
+    todo_list = %TodoList{entries: todo_list_entries, next_id: 4}
+
+    teste = TodoList.update_entry_2(todo_list, [1, :name], "updated name")
+
+    assert TodoList.get_entries(teste, ~D[2024-02-01])
+           |> Enum.at(0)
+           |> Map.fetch(:name) == {:ok, "updated name"}
+  end
 end
