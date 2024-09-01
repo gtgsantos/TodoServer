@@ -21,6 +21,20 @@ defmodule TodoList do
   @spec new() :: t()
   def new(), do: %TodoList{}
 
+  # TODO need to handle exception in case of value mismatch
+  @spec new(:map, map()) :: t()
+  def new(:map, entries) do
+    size = map_size(entries)
+    %TodoList{entries: entries, next_id: size + 1}
+  end
+
+  # TODO need to handle exception in case of value mismatch
+  @spec new(:list, list()) :: t()
+  def new(:list, entries) do
+    size = length(entries)
+    %TodoList{entries: entries, next_id: size + 1}
+  end
+
   @doc """
   Adds a new entry to the `TodoList`.
 
