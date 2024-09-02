@@ -22,22 +22,29 @@ defmodule TodoList do
   def new(), do: %TodoList{}
 
   # TODO need to handle exception in case of value mismatch
-  @spec new(:map, map()) :: t()
-  def new(:map, entries) do
+  @spec new(map(), :map) :: t()
+  def new(entries, :map) do
     size = map_size(entries)
     %TodoList{entries: entries, next_id: size + 1}
   end
 
   # TODO need to handle exception in case of value mismatch
-  @spec new(:list, list()) :: t()
-  def new(:list, entries) do
+  @spec new(list(), :list) :: t()
+  def new(entries, :list) do
     Enum.reduce(
-      entries, 
-      %TodoList{}, 
+      entries,
+      %TodoList{},
       # fn entry, accumulator -> TodoList.add_entries(accumulator, entry) end
-      &TodoList.add_entries(&2, &1)
+      &add_entries(&2, &1)
     )
-    
+  end
+
+  # TODO need to handle exception in case of value mismatch
+  @spec new(String.t(), :file) :: t()
+  def new(path, :file) do
+    Todo.CsvFileHelper.read_from_file!(path)
+    |> Enum.map(&%{name: Enum.at(&1, 0), date: Enum.at(&1, 1)})
+    |> new(:list)
   end
 
   @doc """
