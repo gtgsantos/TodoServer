@@ -6,7 +6,8 @@ defmodule MultiDictTest do
       MultiDict.new()
 
     teste =
-      MultiDict.add_entries(teste, ~D[2023-02-03], "nome 1")
+      MultiDict.new()
+      |> MultiDict.add_entries(~D[2023-02-03], "nome 1")
       |> MultiDict.add_entries(~D[2023-02-04], "nome 4")
       |> MultiDict.add_entries(~D[2023-02-05], "nome 5")
 
