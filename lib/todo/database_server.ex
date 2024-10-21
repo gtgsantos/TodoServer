@@ -1,28 +1,24 @@
 defmodule Todo.DatabaseServer do
   def start do
-    spawn(&loop/0)
+    spawn(fn ->
+      connection = :rand.uniform(1000)
+      loop(connection)
+    end)
   end
 
-  defp loop do
-    IO.puts("aaa")
-
+  defp loop(connection) do
     receive do
-      :m ->
-        IO.puts("www")
-
-      {:message_type, value} ->
-        IO.puts("teste teste")
-
-      {:run_query, caller, query_def} ->
-        send(caller, {:query_result, run_query(query_def)})
+      {:run_query, from_pid, query_def} ->
+        query_result = run_query(connection, query_def)
+        send(from_pid, {:query_result, query_result})
     end
 
-    loop()
+    loop(connection)
   end
 
-  defp run_query(query_def) do
+  defp run_query(connection, query_def) do
     :timer.sleep(2000)
-    "#{query_def} result"
+    "Connection #{connection}: #{query_def} result"
   end
 
   def run_async(server_pid, query_def) do
