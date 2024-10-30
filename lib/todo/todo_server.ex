@@ -1,20 +1,46 @@
 defmodule TodoServer do
-  defstruct name: nil, time: nil
+  def start do
+    spawn(fn -> loop(TodoList.new()) end)
+  end
 
-  @moduledoc """
-  Documentation for `TodoServer`.
-  """
+  defp loop(todo_list) do
+    IO.puts("#5")
 
-  @doc """
-  Hello world.
+    new_todo_list =
+      receive do
+        message ->
+          IO.puts("#2")
+          process_message(todo_list, message)
+      end
 
-  ## Examples
+    loop(new_todo_list)
+  end
 
-      iex> TodoServer.hello()
-      :world
+  def add_entry(todo_server, new_entry) do
+    IO.puts("#1")
+    send(todo_server, {:add_entry, new_entry})
+  end
 
-  """
-  def hello do
-    :world
+  defp process_message(todo_list, {:add_entry, new_entry}) do
+    IO.puts("#3")
+    TodoList.add_entries(todo_list, new_entry)
+
+    # IO.puts("zz")
+  end
+
+  defp process_message(todo_list, {:entries, caller, date}) do
+    send(caller, {:todo_entries, TodoList.entries(todo_list, date)})
+    todo_list
+  end
+
+  def entries(todo_server, date) do
+    send(todo_server, {:entries, self(), date})
+
+    receive do
+      {:todo_entries, entries} -> entries
+    after
+      5000 ->
+        {:error, :timeout}
+    end
   end
 end

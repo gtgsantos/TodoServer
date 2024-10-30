@@ -61,6 +61,7 @@ defmodule TodoList do
   """
   @spec add_entries(t(), map()) :: t()
   def add_entries(todo_list, entry) do
+    IO.puts("#4")
     # adds an id to entry
     entry = Map.put(entry, :id, todo_list.next_id)
 
